@@ -1,0 +1,144 @@
+#include <stdio.h>
+#include "introprog_complexity_steps_input.h"
+
+long for_linear(int n, int* befehle)
+{ 
+    // TODO: Die Befehle müssen richtig gezählt werden
+
+    long sum = 0;
+    *befehle += 1;
+    for(int i = 1; i <= n; ++i) {
+        // Zähle die folgende Zeile als genau ein Befehl!
+        sum += get_value_one();
+        *befehle +=1; //Hier werden die Befehle von dem Vergeich aufgezählt. Undzwar n mal.
+        *befehle +=1; //Hier werden die Befehle von der neuen Zuweisung nach jedem Durchlauf gezählt.
+        *befehle +=1; //Hier werden die Befehle des Körpers gezählt.
+    }
+    *befehle +=1; // Hier wird die Abbruchbedingung gezählt: letzter Vergleich.
+    *befehle +=1; // Hier wird der Befehl von der For-Schleife der Initialiserung gezählt. Dies geschieht nur einmal, denn  
+    
+    return sum;
+}
+
+long for_quadratisch(int n, int* befehle)
+{
+    // TODO: Die Befehle müssen richtig gezählt werden
+
+    long sum = 0;
+    *befehle +=1;// Initialisierung der Variable sum.
+    for(int i = 1; i <= n; ++i) {
+        *befehle +=1;//Vergleich in der ersten For-Schleife.
+        *befehle +=1;// Zuweisung der Variable nach jedem Durchgang.
+        *befehle +=1;//Ausführung des Körpers.
+        for(int j = 1; j <= n; ++j) {
+            *befehle +=1;// Vergleich in der zweiten For-Schleife.
+            *befehle +=1;// neue Zuweisung der Variable nach jedem Durchlauf der zweiten For-Schleife.
+            *befehle +=1;// Ausführung des Körpers in der zweiten For-Schleife.
+            // Zähle die folgende Zeile als genau ein Befehl!
+            sum += get_value_one();
+        }
+        /**befehle +=1;// Befehl der Initialisierung der zweiten Schleife.
+        *befehle +=1;// Abbruchbedingung der zweiten For-Schleife. Also der letze Vergleich.*/
+        
+    }
+    *befehle +=1;// Initialisierung der Variable i in der ersten For-Schleife.
+    *befehle +=1;//Abbruchbedingung der ersten For-Schleife.
+    *befehle +=1;// Befehl der Initialisierung der zweiten Schleife.
+    *befehle +=1;// Abbruchbedingung der zweiten For-Schleife. Also der letze Vergleich.
+        
+    return sum;
+}
+
+long for_kubisch(int n, int* befehle)
+{
+    // TODO: Die Befehle müssen richtig gezählt werden
+
+    long sum = 0;
+    *befehle +=1;// Initialisierung der Variable sum
+    for(int i = 1; i <= n; ++i) {
+        *befehle +=1;// Vergleich der Werte i und n in der ersten For-Schleife
+        *befehle +=1;// neue Zuweisung der Variable i nach jedem Durchgang
+        *befehle +=1;// Ausführung des Körpers(zweite For-Schleife)
+        for(int j = 1; j <= n; ++j) {
+            *befehle +=1;//Vergleich der Variablen j und n in der zweiten For-Schleife
+            *befehle +=1;//neue Zuweisung der Variable j nach jedem Durchgang
+            *befehle +=1;// Ausführung des Körpers (dritte For-Schleife)
+            for(int k = 1; k <= n; ++k) {
+                // Zähle die folgende Zeile als genau ein
+                // Befehl!
+                *befehle +=1;//Vergleich der Variablem k und n in der dritten For-Schleife
+                *befehle +=1;//neue Zuweisung der Variable k nach jedem Durchgang
+                *befehle +=1;// Ausführung des Körpers 
+                sum += get_value_one();
+            }
+            
+        }
+        
+    }
+    *befehle +=1;//Initialisierung der Variable i in der ersten For-Schleife.
+    *befehle +=1;//Abbruchbedingung der ersten For-Schleife
+    *befehle +=1;//Initialisierung der Variable j in der zweiten For-Schleife
+    *befehle +=1;//Abbruchbedingung der zweiten For-Schleife
+    *befehle +=1;//Initialisierung der Variable k in der dritten For-Schleife
+    *befehle +=1;//Abbruchbedingung der dritten For-Schleife
+        
+    return sum;
+}
+
+
+int main(int argc, char *argv[])
+{
+    const int WERTE[] = {5,6,7,8,9,10};
+    const int LEN_WERTE = 6;
+    const int LEN_ALGORITHMEN = 3;
+
+    long befehle_array[LEN_ALGORITHMEN][LEN_WERTE];
+    long werte_array[LEN_ALGORITHMEN][LEN_WERTE];
+    double laufzeit_array[LEN_ALGORITHMEN][LEN_WERTE];
+
+    for(int j = 0; j < LEN_WERTE; ++j) {
+        int n = WERTE[j];
+        for(int i = 0; i < LEN_ALGORITHMEN; ++i) {
+            printf("Starte Algorithmus %d mit Wert %d\n",
+                (i+1), n);
+            int anzahl_befehle = 0;
+            int wert = 0;
+
+            // Starte den Timer
+            start_timer();
+
+            // Aufruf der entsprechenden Funktion
+            if(i==0) {
+                wert = for_linear(n, &anzahl_befehle);
+            }
+            else if(i==1) {
+                wert = for_quadratisch(n, &anzahl_befehle);
+            }
+            else if(i==2) {
+                wert = for_kubisch(n, &anzahl_befehle);
+            }
+
+            // Speichere Laufzeit, Rückgabewert und Anzahl
+            // ausgeführter Befehle ab
+            laufzeit_array[i][j] = end_timer();
+            werte_array[i][j] = wert;
+            befehle_array[i][j] = anzahl_befehle;
+        }
+        printf("\n");
+    }
+
+    // Ausgabe der Rückgabewerte, Anzahl ausgeführter Befehle
+    // sowie der gemessenen Laufzeiten (in Millisekunden)
+    printf("%3s \t%-28s \t%-28s \t%-28s\n", "","linear", "quadratisch", "kubisch");
+    printf("%3s \t %5s %10s %10s\t %5s %10s %10s\t %5s %10s %10s\n", "n","Wert","Befehle","Laufzeit","Wert","Befehle","Laufzeit","Wert","Befehle","Laufzeit");
+
+    for(int j = 0; j < LEN_WERTE; ++j) {
+        printf("%3d \t ",WERTE[j]);
+        for(int i = 0; i < LEN_ALGORITHMEN; ++i) {
+            printf("%5ld %10ld %10.4f \t ", werte_array[i][j], befehle_array[i][j], laufzeit_array[i][j]);
+        }
+        printf("\n");
+    }
+
+    return 0;
+}
